@@ -1,0 +1,7 @@
+[package]
+name = "particle-data"
+version = "0.1.0"
+edition = "2024"
+description = "Simulation-ready particle data from PDG, embedded at compile time."
+
+[dependencies]
