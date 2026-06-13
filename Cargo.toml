@@ -5,3 +5,4 @@ edition = "2024"
 description = "Simulation-ready particle data from PDG, embedded at compile time."
 
 [dependencies]
+pdg-rs = "0.1.2"
