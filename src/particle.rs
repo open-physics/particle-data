@@ -12,7 +12,7 @@ pub struct DecayChannel {
     /// Matrix element mode used by the decay engine (0 = deneric phase space
     pub me_mode: i32,
     /// PDG IDs of the decay products (negative for antiparticles)
-    pub products: Vec<i32>,
+    pub products: &'static [i32],
 }
 
 /// Full static data for a single particle species
@@ -22,9 +22,9 @@ pub struct ParticleEntry {
     /// `id` is always positive - the antiparticle is represented by `-id`.
     pub id: i32,
     /// Particle name, e.g. "mu-", "Z0", "photon", "pi+"
-    pub particle_name: String,
+    pub particle_name: &'static str,
     /// Antiparticle name, or None if the particle is its own antiparticle (or self-conjugate)
-    pub antiparticle_name: Option<String>,
+    pub antiparticle_name: Option<&'static str>,
     /// 2S+1: 1 = scalar (Higgs), 2 = fermion (quark, lepton), 3 = vector boson (W, Z, photon, gluon)
     pub spin_type: i32,
     /// Electric charge * 3, e.g. -3 for electron, +2 for up quark, 0 for photon
@@ -44,18 +44,18 @@ pub struct ParticleEntry {
     ///`tau0` is the proper lifetime of the particle.
     pub tau0: f64,
     /// Decay channels (empty for stable particles), sum of all br_ratios should be <= 1.0
-    pub channels: Vec<DecayChannel>,
+    pub channels: &'static [DecayChannel],
 }
 
 impl ParticleEntry {
     /// Name for given PDG id
     pub fn name(&self, id: i32) -> &str {
         if id >= 0 {
-            &self.particle_name
+            self.particle_name
         } else {
-            match &self.antiparticle_name {
+            match self.antiparticle_name {
                 Some(name_exists) => name_exists, // distinct antiparticle
-                None => &self.particle_name,      // self-conjugate particle
+                None => self.particle_name,       // self-conjugate particle
             }
         }
     }
