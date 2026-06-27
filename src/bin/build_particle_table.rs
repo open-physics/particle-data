@@ -1,4 +1,4 @@
-use pdg_rs::{AngularMomentum, Charge, Pdg};
+use pdg_rs::{AngularMomentum, Charge, ParticleSearchQuery, ParticleType, Pdg};
 
 fn charge_type(charge: Charge) -> i32 {
     match charge {
@@ -37,16 +37,13 @@ fn total_angular_momentum_type(ang_mom: Option<AngularMomentum>) -> i32 {
 }
 
 fn main() {
+    // 1. Get particles from PDG database
     let db = Pdg::open().expect("failed to open PDG database");
-    let electron = db.mcid(11).expect("db error").expect("electron not found");
-    println!("Electron name: {:?}", electron.name);
-    println!("mcid: {:?}", electron.mcid);
-    println!("charge: {:?}", electron.charge);
-
-    if let Ok(Some(mass)) = electron.mass() {
-        println!("mass: {:?} GeV", mass.value);
+    let mut particles = Vec::new();
+    for particle_type in [ParticleType::Particle, ParticleType::SelfConjugate] {
+        let query = ParticleSearchQuery::new().particle_type(particle_type);
+        let results = db.search_particles(query).expect("search failed");
+        particles.extend(results);
     }
-    if let Ok(bfs) = electron.branching_fractions() {
-        println!("branching fractions: {}", bfs.len());
-    }
+    println!("Found {} particles", particles.len());
 }
