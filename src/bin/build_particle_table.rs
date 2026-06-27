@@ -45,5 +45,6 @@ fn main() {
         let results = db.search_particles(query).expect("search failed");
         particles.extend(results);
     }
+    particles.retain(|p| p.mcid.is_some()); // keep particles with a valid MC ID only
     println!("Found {} particles", particles.len());
 }
